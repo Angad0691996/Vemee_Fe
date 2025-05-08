@@ -1,62 +1,101 @@
 pipeline {
-    agent { label 'react-node' }  // Ensure the label matches your node configuration
+    agent any
 
     environment {
-        NODE_VERSION = "18.20.8"
-        BUILD_DIR = "/var/www/react-app"  // Adjust this as needed
+        REPO_URL = 'https://github.com/Angad0691996/Vemee_Fe.git'
+        APP_DIR = 'D:/React/Vemee_Fe'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Clone Repository') {
             steps {
-                echo 'Checking out source code...'
-                checkout scm
+                script {
+                    echo 'Cloning repository...'
+                    dir('D:/React') {
+                        bat "git clone ${REPO_URL}"
+                    }
+                }
             }
         }
 
-        stage('Setup Node.js') {
+        stage('Clear npm Cache') {
             steps {
-                echo 'Setting up Node.js...'
-                sh """
-                    nvm install ${NODE_VERSION}
-                    nvm use ${NODE_VERSION}
-                    node -v
-                    npm -v
-                """
+                script {
+                    echo 'Clearing npm cache...'
+                    dir(APP_DIR) {
+                        bat 'npm cache clean --force'
+                    }
+                }
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Remove node_modules and package-lock.json') {
             steps {
-                echo 'Installing dependencies...'
-                sh 'npm install'
+                script {
+                    echo 'Removing node_modules and package-lock.json...'
+                    dir(APP_DIR) {
+                        bat 'rm -rf node_modules'
+                        bat 'del package-lock.json'
+                    }
+                }
             }
         }
 
-        stage('Build') {
+        stage('Reinstall Dependencies') {
             steps {
-                echo 'Building the React app...'
-                sh 'npm run build'
+                script {
+                    echo 'Reinstalling dependencies...'
+                    dir(APP_DIR) {
+                        bat 'npm install'
+                    }
+                }
             }
         }
 
-        stage('Deploy') {
+        stage('Rebuild Dependencies') {
             steps {
-                echo "Deploying to ${BUILD_DIR}..."
-                sh """
-                    sudo rm -rf ${BUILD_DIR}/*
-                    sudo cp -r build/* ${BUILD_DIR}/
-                """
+                script {
+                    echo 'Rebuilding dependencies...'
+                    dir(APP_DIR) {
+                        bat 'npm rebuild'
+                    }
+                }
+            }
+        }
+
+        stage('Install/Update ajv and ajv-keywords') {
+            steps {
+                script {
+                    echo 'Installing/Updating ajv and ajv-keywords...'
+                    dir(APP_DIR) {
+                        bat 'npm install ajv@latest'
+                        bat 'npm install ajv-keywords@latest'
+                    }
+                }
+            }
+        }
+
+        stage('Start Development Server') {
+            steps {
+                script {
+                    echo 'Starting the development server...'
+                    dir(APP_DIR) {
+                        bat 'npm start'
+                    }
+                }
             }
         }
     }
 
     post {
+        always {
+            echo 'Cleaning up workspace...'
+        }
         success {
-            echo 'Deployment successful!'
+            echo 'Build completed successfully!'
         }
         failure {
-            echo 'Deployment failed.'
+            echo 'Build failed. Check logs for details.'
         }
     }
 }
