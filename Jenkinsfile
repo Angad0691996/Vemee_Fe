@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         REPO_URL = 'https://github.com/Angad0691996/Vemee_Fe.git'
-        APP_DIR = 'D:/React/Vemee_Fe'
+        APP_DIR = '/home/ubuntu/Vemee_Fe'
     }
 
     stages {
@@ -11,8 +11,8 @@ pipeline {
             steps {
                 script {
                     echo 'Cloning repository...'
-                    dir('D:/React') {
-                        bat "git clone ${REPO_URL}"
+                    dir('/home/ubuntu') {
+                        sh "git clone ${REPO_URL}"
                     }
                 }
             }
@@ -23,7 +23,7 @@ pipeline {
                 script {
                     echo 'Clearing npm cache...'
                     dir(APP_DIR) {
-                        bat 'npm cache clean --force'
+                        sh 'npm cache clean --force'
                     }
                 }
             }
@@ -34,8 +34,8 @@ pipeline {
                 script {
                     echo 'Removing node_modules and package-lock.json...'
                     dir(APP_DIR) {
-                        bat 'rd /s /q node_modules'
-                        bat 'del package-lock.json'
+                        sh 'rm -rf node_modules'
+                        sh 'rm -f package-lock.json'
                     }
                 }
             }
@@ -46,7 +46,7 @@ pipeline {
                 script {
                     echo 'Reinstalling dependencies...'
                     dir(APP_DIR) {
-                        bat 'npm install'
+                        sh 'npm install'
                     }
                 }
             }
@@ -57,7 +57,7 @@ pipeline {
                 script {
                     echo 'Rebuilding dependencies...'
                     dir(APP_DIR) {
-                        bat 'npm rebuild'
+                        sh 'npm rebuild'
                     }
                 }
             }
@@ -68,8 +68,8 @@ pipeline {
                 script {
                     echo 'Installing/Updating ajv and ajv-keywords...'
                     dir(APP_DIR) {
-                        bat 'npm install ajv@latest'
-                        bat 'npm install ajv-keywords@latest'
+                        sh 'npm install ajv@latest'
+                        sh 'npm install ajv-keywords@latest'
                     }
                 }
             }
@@ -80,7 +80,7 @@ pipeline {
                 script {
                     echo 'Starting the development server...'
                     dir(APP_DIR) {
-                        bat 'npm start'
+                        sh 'npm start'
                     }
                 }
             }
