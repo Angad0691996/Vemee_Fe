@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label 'vemeefe' }
 
     environment {
         REPO_URL = 'https://github.com/Angad0691996/Vemee_Fe.git'
@@ -34,7 +34,7 @@ pipeline {
                 script {
                     echo 'Removing node_modules and package-lock.json...'
                     dir(APP_DIR) {
-                        bat 'rm -rf node_modules'
+                        bat 'rd /s /q node_modules'
                         bat 'del package-lock.json'
                     }
                 }
