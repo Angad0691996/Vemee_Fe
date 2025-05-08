@@ -1,0 +1,409 @@
+/* Style for mobile landscape*/
+@media screen and (min-width: 425px) and (max-device-width: 800px) {
+  .cl_logo svg {
+    width: 20%;
+  }
+  .client_login_left {
+    padding: 5%;
+  }
+  .client_login_right:has(.client_login_right_img) {
+    display: none;
+  }
+  .client_login_left:has(.client_login_right_img) {
+    display: none;
+  }
+  .client_login_main .client_login .client_login_right {
+    width: 100%;
+    height: auto;
+  }
+  .client_content_login_box {
+    max-height: 100vh;
+  }
+  .client_login_header {
+    padding: 10px 10px;
+  }
+  .client_content_login_box h1 {
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+  }
+  .client_login_content {
+    padding-block: 5px;
+  }
+  .client_login_content_form_box {
+    height: 60px;
+  }
+  .pofile_upload_details .client_login_content_form_box {
+    height: 100px;
+  }
+  #ClientButton {
+    margin-top: 50px;
+  }
+  .login_form_box_container {
+    display: flex;
+    gap: 10px;
+  }
+  .select-box {
+    height: 140px;
+  }
+  .flex-row > :not(.cl_list_header) {
+    flex: unset;
+  }
+  .cl_meeting_title h3 {
+    width: max-content;
+  }
+  .cl_search_box input[type="text"] {
+    min-width: 120px;
+  }
+  .cl_meeting_buton {
+    margin-bottom: 10px;
+  }
+  .flex-row {
+    flex-direction: column !important;
+  }
+  .cl_list_header {
+    min-width: 100vw;
+    top: 0;
+    height: min-content;
+  }
+  .cl_list_middle_box ul {
+    margin-bottom: 0;
+  }
+  .modal {
+    left: 50% !important;
+    transform: translate(-45%, 0);
+  }
+  .modal-content {
+    width: 90% !important;
+    height: 90% !important;
+  }
+  .modal-body {
+    padding: 10px !important;
+  }
+  .meeting_details {
+    padding: 10px !important;
+  }
+  .modal-header {
+    padding: 10px 16px !important;
+  }
+  .datepicker img {
+    display: none;
+  }
+  .datepicker {
+    margin-bottom: 5px;
+  }
+  .meeting_details .title {
+    gap: 10px;
+  }
+  .meeting_details .schedule_time {
+    gap: 10px;
+  }
+  .cl_edit_content_box .client_login_content_form_box {
+    padding: 0 !important;
+  }
+  .addAttendee {
+    gap: 10px;
+  }
+  .cl_list_header .wrapper {
+    padding: 10px 20px;
+  }
+  .cl_save_btn {
+    padding: 10px 20px;
+  }
+  .cl_cancel_btn {
+    padding: 10px 20px;
+    min-width: 120px;
+  }
+  .agenda {
+    gap: 10px;
+  }
+  .react-datepicker__triangle {
+    display: none;
+  }
+  .react-datepicker-popper {
+    transform: translate3d(-60px, 55px, 0px) !important;
+  }
+  .cl_meeting_box .react-datepicker-popper {
+    transform: translate3d(70px, 180px, 0px) !important;
+  }
+  .cl_list_pofile a div {
+    left: -125px !important;
+  }
+  .cl_preview_box_inr {
+    flex-direction: row;
+  }
+  .cl_preview_device {
+    padding: 20px 0;
+  }
+  .meeting_menu_center {
+    bottom: 20%;
+  }
+  .pofile_inr_page_box {
+    margin: 10px auto;
+  }
+  .attendance_table_box td,
+  .attendance_table_box th {
+    max-width: 150px;
+  }
+  .attendance_table_box td {
+    padding: 10px;
+    word-wrap: break-word;
+  }
+  .meeting_menu ul {
+    padding-left: 0px;
+    margin: 0 0 0 20px !important;
+  }
+  .cl_user_list {
+    height: auto;
+    width: 200px;
+    flex: 1 0 auto;
+  }
+  .pip-container {
+    width: min-content !important;
+  }
+  .meeting_video_body {
+    padding-inline: 20px;
+  }
+  span.circle_remote_participant {
+    transform: translate(-50%, 0%);
+  }
+  .organiser-focus .cl_user_list {
+    width: 62vw !important;
+  }
+  .organiser-focus .cl_user_list_box {
+    height: 100%;
+  }
+  .organiser-focus .cl_main_meeting_box {
+    width: 200px;
+  }
+  .meeting_video_body.present_student .cl_user_list .present_student_video {
+    height: 100%;
+    max-width: 200px;
+    aspect-ratio: unset;
+    left: calc(0% - 210px);
+    top: calc(0% + 120px);
+  }
+  .meeting_video_body.present_student
+    .cl_user_list
+    .cl_user_list_box.present_student_video
+    .cl_user_list_box_videos {
+    height: auto;
+  }
+  /* .cl_logo {
+    width: 100px;
+  } */
+}
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+/* Portait */
+@media screen and (max-device-width: 425px) {
+  .cl_logo svg {
+    width: 20%;
+  }
+  .wrapper {
+    padding: 0 20px;
+  }
+  .client_login_left {
+    padding: 5%;
+  }
+  .client_login_right:has(.client_login_right_img) {
+    display: none;
+  }
+  .client_login_left:has(.client_login_right_img) {
+    display: none;
+  }
+  .client_login_main .client_login .client_login_right {
+    width: 100%;
+  }
+  .client_select_main .client_login .client_login_right {
+    width: 100%;
+  }
+  .flex-row > :not(.cl_list_header) {
+    flex: 1 0 auto;
+  }
+  .cl_meeting_title h3 {
+    width: 120px;
+  }
+  .cl_search_box input[type="text"] {
+    min-width: unset;
+    padding: 0px;
+  }
+  .cl_meeting_buton {
+    margin-bottom: 10px;
+  }
+  .flex-row {
+    flex-direction: column !important;
+  }
+  .cl_list_header {
+    min-width: 100vw;
+    top: 0;
+    height: min-content;
+  }
+  .cl_list_middle_box ul {
+    margin-bottom: 0;
+  }
+  .cl_list_pofile a div {
+    left: -125px !important;
+  }
+  .modal {
+    left: 50% !important;
+    transform: translate(-45%, 0);
+  }
+  .modal-content {
+    width: 90% !important;
+    height: 90% !important;
+  }
+  .modal-body {
+    padding: 10px !important;
+  }
+  .meeting_details {
+    padding: 10px !important;
+  }
+  .modal-header {
+    padding: 10px 16px !important;
+  }
+  .datepicker img {
+    display: none;
+  }
+  .datepicker {
+    margin-bottom: 5px;
+  }
+  .meeting_details .title {
+    gap: 10px;
+  }
+  .meeting_details .schedule_time {
+    gap: 10px;
+  }
+  .cl_edit_content_box .client_login_content_form_box {
+    padding: 0 !important;
+    flex-wrap: wrap;
+  }
+  .addAttendee {
+    gap: 10px;
+  }
+  .addAttendee .basic-multi-select {
+    flex: 1 0 40%;
+  }
+  .addAttendee .error {
+    flex: 1 0 60%;
+  }
+  .addAttendee .cl_save_btn {
+    flex: 1 0 60%;
+  }
+  .cl_save_btn {
+    padding: 10px 20px;
+  }
+  .cl_cancel_btn {
+    padding: 10px 20px;
+    min-width: 120px;
+  }
+  .agenda {
+    gap: 10px;
+  }
+  .react-datepicker__triangle {
+    display: none;
+  }
+  .react-datepicker {
+    display: flex !important;
+  }
+  .react-datepicker-popper {
+    transform: translate3d(-70px, -25px, 0px) !important;
+  }
+  .cl_list_pofile a div {
+    left: -125px !important;
+  }
+  .schedule_time {
+    flex-wrap: wrap;
+  }
+  .start_datetime,
+  .endDate {
+    flex: 1 0 80%;
+  }
+  .cl_meeting_box .react-datepicker-popper {
+    transform: translate3d(30px, 220px, 0px) !important;
+  }
+  .cl_meeting_list_otr > .cl_meeting_box {
+    flex: 1 0 38%;
+  }
+  .cl_preview_box_inr {
+    flex-direction: column;
+  }
+  .cl_preview_setting {
+    gap: 20px;
+  }
+  .cl_preview_device {
+    padding: 20px 0;
+  }
+  .meeting_menu ul {
+    margin: 0 !important;
+    gap: 5px;
+  }
+  .meeting_menu ul li {
+    margin: 0 !important;
+  }
+  .pofile_main_box {
+    width: 100%;
+    padding: 10px;
+  }
+  .profile_header h2 {
+    margin-bottom: 0px;
+  }
+  .pofile_upload_details {
+    flex-direction: column;
+  }
+  .client_login_content_form_box_col_6 {
+    width: 100%;
+    padding: 10px;
+  }
+  .pofile_inr_page_box {
+    margin: 10px auto;
+  }
+  .pofile_inr_page_box {
+    margin: 10px auto;
+  }
+  .attendance_table_box td,
+  .attendance_table_box th {
+    max-width: 150px;
+  }
+  .attendance_table_box td {
+    padding: 10px;
+    word-wrap: break-word;
+  }
+  .meeting_video_body {
+    flex-direction: column;
+    align-items: center;
+    padding-inline: 20px;
+  }
+  .pip-container {
+    width: min-content !important;
+  }
+  ol,
+  ul {
+    padding-left: 0 !important;
+  }
+  span.circle_remote_participant {
+    transform: translate(-50%, -50%);
+  }
+  .organiser-focus .cl_user_list {
+    width: 90vw !important;
+  }
+  .cl_user_list {
+    flex-direction: row;
+  }
+  .cl_user_list_box {
+    flex: 1 0 auto;
+    width: auto;
+  }
+  .cl_user_list_box_videos {
+    height: 140px;
+  }
+  .cl_logo {
+    width: 100px;
+  }
+  .cl_meeting_list_wrapper {
+    padding-left: 0px;
+    padding-top: 200px;
+  }
+  .cl_meeting_content {
+    padding-left: 0px;
+    padding-top: 200px;
+  }
+}

@@ -1,0 +1,16 @@
+<svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="back_btn"
+                      width="34"
+                      height="32"
+                      viewBox="0 0 34 32"
+                      fill="none"
+                    >
+                      <path
+                        d="M15.8281 30.0625L1.76562 16L15.8281 1.9375M3.71875 16H32.2344"
+                        stroke="black"
+                        stroke-width="2.34375"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>

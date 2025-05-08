@@ -1,0 +1,119 @@
+.buttonGroup {
+  display: flex;
+}
+.container {
+  justify-content: center;
+  gap: 1rem;
+  align-items: flex-start;
+  display: flex;
+}
+.imgContainer {
+  padding-top: 2%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  height: 100vh;
+  justify-content: flex-start;
+}
+.faceContainer {
+  width: max-content;
+  display: grid;
+  gap: 1rem;
+  height: 100vh;
+  align-content: center;
+}
+.faceWindow {
+  position: relative;
+}
+.formImage {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30%;
+  height: 30%;
+}
+.cameraOptions select {
+  width: 100%;
+  padding: 5px 10px;
+}
+.uploadFile {
+  display: none;
+}
+.captureBtn,
+.submitBtn {
+  background-color: indigo;
+  color: white;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+.dropzone {
+  height: 100%;
+  padding: 10px;
+  color: white;
+}
+.buttonGroup {
+  position: absolute;
+  bottom: 20px;
+  padding-inline: 20px;
+}
+
+button {
+  border: none;
+}
+.buttonGroup,
+.submitGroup {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+}
+.buttonGroup > button,
+.buttonGroup > input,
+.buttonGroup > label {
+  width: 100%;
+}
+.capturedImgs {
+  position: relative;
+}
+.capturedImgs button {
+  position: absolute;
+  bottom: 0px;
+  padding-block: 5px;
+  width: 100%;
+}
+.capturedImgs img {
+  display: block;
+  width: 300px;
+  height: 200px;
+}
+.registerGroup {
+  display: grid;
+  gap: 1rem;
+}
+.registerGroup input {
+  padding: 5px 10px;
+}
+.spinner {
+  animation: spin infinite 1.5s linear;
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  fill: azure;
+  z-index: 1;
+  /*You can increase or decrease the timer (5s) to 
+   increase or decrease the speed of the spinner*/
+}
+
+@keyframes spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
