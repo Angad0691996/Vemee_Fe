@@ -9,11 +9,11 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Ensure the workspace is created
-                    sh "mkdir -p ${FRONTEND_DIR}"
-
-                    // Navigate to the directory and clean it
-                    sh "rm -rf ${FRONTEND_DIR}/*"
+                    // Ensure the workspace is created and cleaned
+                    sh """
+                        rm -rf ${FRONTEND_DIR}
+                        mkdir -p ${FRONTEND_DIR}
+                    """
 
                     // Clone the repository
                     withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS_ID, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
