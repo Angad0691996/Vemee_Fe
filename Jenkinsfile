@@ -9,16 +9,26 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Adjust permissions before deleting
+                    // Create the directory if it doesn't exist
                     sh """
-                        sudo chown -R jenkins:jenkins ${FRONTEND_DIR} || true
-                        sudo chmod -R 775 ${FRONTEND_DIR} || true
-                        rm -rf ${FRONTEND_DIR}
+                        if [ ! -d "${FRONTEND_DIR}" ]; then
+                            mkdir -p ${FRONTEND_DIR}
+                        fi
+                    """
+
+                    // Adjust permissions to avoid potential permission issues
+                    sh """
+                        sudo chown -R jenkins:jenkins ${FRONTEND_DIR}
+                        sudo chmod -R 775 ${FRONTEND_DIR}
+                    """
+
+                    // Clean up any previous contents
+                    sh """
+                        rm -rf ${FRONTEND_DIR}/*
                     """
 
                     withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS_ID, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
                         sh """
-                            mkdir -p ${FRONTEND_DIR}
                             cd ${FRONTEND_DIR}
                             git clone https://${GIT_USER}:${GIT_TOKEN}@${REPO_URL} .
                         """
@@ -68,8 +78,8 @@ pipeline {
         always {
             echo 'Pipeline completed. Checking directory structure...'
             sh """
-                sudo chown -R jenkins:jenkins ${FRONTEND_DIR} || true
                 ls -al ${FRONTEND_DIR}
+                tail -n 20 ${FRONTEND_DIR}/frontend.log || echo "No log file found."
             """
         }
         failure {
