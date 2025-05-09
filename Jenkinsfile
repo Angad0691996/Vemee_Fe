@@ -1,79 +1,64 @@
 pipeline {
-    agent { label 'vemee-fe' }
+    agent any
 
     environment {
-        NODE_ENV = 'production'
+        FRONTEND_DIR = '/path/to/your/frontend' // Path to your frontend directory
     }
 
     stages {
-        stage('Declarative: Checkout SCM') {
+        stage('Checkout') {
             steps {
-                checkout scm
+                // Clone the repository (if not done already)
+                git 'https://github.com/your/repository.git'
             }
         }
 
-        stage('Setup Node.js and pm2') {
+        stage('Install Dependencies') {
             steps {
-                script {
-                    echo 'Checking Node.js and pm2 installation...'
-                    sh '''
-                        sudo apt update
-                        sudo apt install -y nodejs npm
-                        sudo npm install -g pm2
-                    '''
+                dir("${env.FRONTEND_DIR}") {
+                    // Install npm packages
+                    script {
+                        sh 'npm install' // Or use 'yarn install' if you're using yarn
+                    }
                 }
             }
         }
 
-        stage('Clear npm Cache') {
+        stage('Start Frontend') {
             steps {
-                script {
-                    echo 'Clearing npm cache...'
-                    sh 'sudo npm cache clean --force'
+                dir("${env.FRONTEND_DIR}") {
+                    // Start the frontend application, binding to all IP addresses
+                    script {
+                        sh 'HOST=0.0.0.0 npm start' // Or use 'yarn start' if you're using yarn
+                    }
                 }
             }
         }
 
-        stage('Remove node_modules and package-lock.json') {
+        stage('Verify Frontend Running') {
             steps {
                 script {
-                    echo 'Removing node_modules and package-lock.json...'
-                    sh 'rm -rf node_modules package-lock.json'
+                    // Ensure the frontend is accessible
+                    def status = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://13.233.121.244:3000", returnStdout: true).trim()
+                    if (status != '200') {
+                        error("Frontend is not accessible at http://13.233.121.244:3000/")
+                    }
                 }
-            }
-        }
-
-        stage('Reinstall Dependencies') {
-            steps {
-                script {
-                    echo 'Reinstalling npm dependencies...'
-                    sh 'sudo npm install'
-                }
-            }
-        }
-
-        stage('Start Application with pm2') {
-            steps {
-                script {
-                    echo 'Starting the application with pm2...'
-                    sh '''
-                        pm2 start npm --name "your-app-name" -- start
-                    '''
-                }
-            }
-        }
-        
-        stage('Declarative: Post Actions') {
-            steps {
-                echo 'Cleaning up workspace...'
-                cleanWs()
             }
         }
     }
 
     post {
         always {
-            echo 'Cleaning up...'
+            echo "Cleaning up and finishing the job."
+        }
+
+        success {
+            echo "Build and frontend startup succeeded!"
+        }
+
+        failure {
+            echo "Build or frontend startup failed."
         }
     }
 }
