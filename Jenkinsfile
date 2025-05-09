@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        FRONTEND_DIR = '/home/ubuntu/workspace/Vemee-Fe'
+        FRONTEND_DIR = '/home/ubuntu/frontend'
         GIT_CREDENTIALS_ID = 'github-creds'
         REPO_URL = 'github.com/Angad0691996/Vemee_Fe.git'
     }
@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Ensure the workspace is created and cleaned
+                    // Cleanup and recreate the frontend directory
                     sh """
                         rm -rf ${FRONTEND_DIR}
                         mkdir -p ${FRONTEND_DIR}
@@ -37,7 +37,7 @@ pipeline {
         stage('Start Frontend') {
             steps {
                 dir("${FRONTEND_DIR}") {
-                    // Kill any existing node processes
+                    // Kill any existing node processes to avoid conflicts
                     sh "pkill -f node || true"
                     
                     // Start the frontend in the background
@@ -49,11 +49,14 @@ pipeline {
         stage('Verify Frontend Running') {
             steps {
                 script {
-                    // Wait for the server to start
                     sleep 5
 
-                    // Check if the frontend is running
-                    sh "curl -I http://localhost:3000 || exit 1"
+                    // Check if the frontend is running on port 3000
+                    def frontendStatus = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:3000", returnStdout: true).trim()
+                    
+                    if (frontendStatus != "200") {
+                        error "Frontend is not running on port 3000. HTTP Status: ${frontendStatus}"
+                    }
                 }
             }
         }
@@ -61,7 +64,8 @@ pipeline {
 
     post {
         always {
-            echo 'Cleaning up and finishing the job.'
+            echo 'Pipeline completed. Checking directory structure...'
+            sh "ls -al ${FRONTEND_DIR}"
         }
         failure {
             echo 'Build or frontend startup failed.'
