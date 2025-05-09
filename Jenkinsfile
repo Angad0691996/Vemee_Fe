@@ -6,7 +6,7 @@ pipeline {
         REPO_URL = 'github.com/Angad0691996/Vemee_Fe.git'
     }
     stages {
-        stage('Checkout') {
+        stage('git cloning and permission setup') {
             steps {
                 script {
                     // Create the directory if it doesn't exist
