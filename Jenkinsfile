@@ -9,19 +9,22 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Cleanup and recreate the frontend directory
-                    sh """
-                        rm -rf ${FRONTEND_DIR}
-                        mkdir -p ${FRONTEND_DIR}
-                    """
+                    // Clean the target directory
+                    sh "rm -rf ${FRONTEND_DIR}"
 
-                    // Clone the repository
                     withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS_ID, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
                         sh """
+                            mkdir -p ${FRONTEND_DIR}
                             cd ${FRONTEND_DIR}
                             git clone https://${GIT_USER}:${GIT_TOKEN}@${REPO_URL} .
                         """
                     }
+
+                    // Apply permissions after cloning
+                    sh """
+                        sudo chown -R jenkins:jenkins ${FRONTEND_DIR}
+                        sudo chmod -R 775 ${FRONTEND_DIR}
+                    """
                 }
             }
         }
@@ -37,9 +40,9 @@ pipeline {
         stage('Start Frontend') {
             steps {
                 dir("${FRONTEND_DIR}") {
-                    // Kill any existing node processes to avoid conflicts
+                    // Stop any existing Node processes
                     sh "pkill -f node || true"
-                    
+
                     // Start the frontend in the background
                     sh "nohup npm start > frontend.log 2>&1 &"
                 }
@@ -51,9 +54,8 @@ pipeline {
                 script {
                     sleep 5
 
-                    // Check if the frontend is running on port 3000
                     def frontendStatus = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:3000", returnStdout: true).trim()
-                    
+
                     if (frontendStatus != "200") {
                         error "Frontend is not running on port 3000. HTTP Status: ${frontendStatus}"
                     }
