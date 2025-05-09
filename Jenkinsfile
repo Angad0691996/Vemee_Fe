@@ -7,12 +7,36 @@ pipeline {
     }
 
     stages {
+        stage('Setup Node.js and pm2') {
+            steps {
+                script {
+                    echo 'Checking Node.js and pm2 installation...'
+                    sh '''
+                        if ! command -v node &> /dev/null; then
+                            sudo apt update
+                            sudo apt install -y nodejs npm
+                        fi
+                        if ! command -v pm2 &> /dev/null; then
+                            sudo npm install -g pm2
+                        fi
+                    '''
+                }
+            }
+        }
+
         stage('Clone Repository') {
             steps {
                 script {
                     echo 'Cloning repository...'
                     dir('/home/ubuntu') {
-                        sh "git clone ${REPO_URL}"
+                        sh '''
+                            if [ ! -d "${APP_DIR}" ]; then
+                                git clone ${REPO_URL}
+                            else
+                                cd ${APP_DIR}
+                                git pull
+                            fi
+                        '''
                     }
                 }
             }
@@ -75,12 +99,17 @@ pipeline {
             }
         }
 
-        stage('Start Development Server') {
+        stage('Start Application with pm2') {
             steps {
                 script {
-                    echo 'Starting the development server...'
+                    echo 'Starting the application with pm2...'
                     dir(APP_DIR) {
-                        sh 'npm start'
+                        sh '''
+                            pm2 delete react-app || true
+                            pm2 start npm --name "react-app" -- start -- --host 0.0.0.0
+                            pm2 save
+                            pm2 startup
+                        '''
                     }
                 }
             }
