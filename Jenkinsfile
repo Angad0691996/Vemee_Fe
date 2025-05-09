@@ -2,7 +2,7 @@ pipeline {
     agent { label 'vemeefe' }  // Use the agent with label 'vemee-fe'
 
     environment {
-        FRONTEND_DIR = '/home/ubuntu/frontend'
+        FRONTEND_DIR = '/home/ubuntu'
         GIT_CREDENTIALS_ID = 'github-creds'
         REPO_URL = 'github.com/Angad0691996/Vemee_Fe.git'
     }
