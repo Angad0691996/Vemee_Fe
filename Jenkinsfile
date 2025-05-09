@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'vemee-fe' }  // Use the agent with label 'vemee-fe'
+    agent { label 'vemeefe' }  // Use the agent with label 'vemee-fe'
 
     environment {
         FRONTEND_DIR = '/home/ubuntu/frontend'
