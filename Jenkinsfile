@@ -9,8 +9,12 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Clean the target directory
-                    sh "rm -rf ${FRONTEND_DIR}"
+                    // Adjust permissions before deleting
+                    sh """
+                        sudo chown -R jenkins:jenkins ${FRONTEND_DIR} || true
+                        sudo chmod -R 775 ${FRONTEND_DIR} || true
+                        rm -rf ${FRONTEND_DIR}
+                    """
 
                     withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS_ID, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
                         sh """
@@ -40,10 +44,7 @@ pipeline {
         stage('Start Frontend') {
             steps {
                 dir("${FRONTEND_DIR}") {
-                    // Stop any existing Node processes
                     sh "pkill -f node || true"
-
-                    // Start the frontend in the background
                     sh "nohup npm start > frontend.log 2>&1 &"
                 }
             }
@@ -53,7 +54,6 @@ pipeline {
             steps {
                 script {
                     sleep 5
-
                     def frontendStatus = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:3000", returnStdout: true).trim()
 
                     if (frontendStatus != "200") {
@@ -67,7 +67,10 @@ pipeline {
     post {
         always {
             echo 'Pipeline completed. Checking directory structure...'
-            sh "ls -al ${FRONTEND_DIR}"
+            sh """
+                sudo chown -R jenkins:jenkins ${FRONTEND_DIR} || true
+                ls -al ${FRONTEND_DIR}
+            """
         }
         failure {
             echo 'Build or frontend startup failed.'
