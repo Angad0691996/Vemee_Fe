@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        FRONTEND_DIR = '/home/ubuntu/Vemee_Fe'
+        FRONTEND_DIR = '/home/ubuntu/workspace/Vemee-Fe'
         GIT_CREDENTIALS_ID = 'github-creds'
         REPO_URL = 'github.com/Angad0691996/Vemee_Fe.git'
     }
@@ -9,10 +9,10 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Ensure the directory is created
+                    // Ensure the workspace is created
                     sh "mkdir -p ${FRONTEND_DIR}"
-                    
-                    // Clean the directory
+
+                    // Navigate to the directory and clean it
                     sh "rm -rf ${FRONTEND_DIR}/*"
 
                     // Clone the repository
@@ -41,7 +41,7 @@ pipeline {
                     sh "pkill -f node || true"
                     
                     // Start the frontend in the background
-                    sh "nohup npm start &"
+                    sh "nohup npm start > frontend.log 2>&1 &"
                 }
             }
         }
@@ -49,11 +49,11 @@ pipeline {
         stage('Verify Frontend Running') {
             steps {
                 script {
+                    // Wait for the server to start
+                    sleep 5
+
                     // Check if the frontend is running
-                    sh """
-                        sleep 5
-                        curl -I http://localhost:3000 || exit 1
-                    """
+                    sh "curl -I http://localhost:3000 || exit 1"
                 }
             }
         }
