@@ -1,31 +1,17 @@
 pipeline {
-    agent { label 'vemeefe' }
+    agent any
 
     environment {
-        GIT_CREDENTIALS_ID = 'github-creds'
-        REPO_URL = 'github.com/Angad0691996/Vemee_Fe.git'
-        CLONE_DIR = '/home/ubuntu'
-        BRANCH = 'main'
+        CLONE_DIR = "${env.WORKSPACE}"  // Use actual Jenkins workspace
     }
 
     stages {
-        stage('Clone Repository') {
-            steps {
-                dir("${CLONE_DIR}") {
-                    git branch: "${BRANCH}",
-                        credentialsId: "${GIT_CREDENTIALS_ID}",
-                        url: "https://${REPO_URL}"
-                }
-            }
-        }
-
         stage('Ensure Missing Files Exist') {
             steps {
-                dir("${CLONE_DIR}/Vemee_Fe") {
+                dir("${CLONE_DIR}") {
                     sh '''
                         mkdir -p src/components
-                        cat <<EOF > src/components/ReactMeet.js
-import React from 'react';
+                        echo "import React from 'react';
 
 const ReactMeet = () => {
   return (
@@ -36,8 +22,7 @@ const ReactMeet = () => {
   );
 };
 
-export default ReactMeet;
-EOF
+export default ReactMeet;" > src/components/ReactMeet.js
                     '''
                 }
             }
@@ -45,7 +30,7 @@ EOF
 
         stage('Install Dependencies') {
             steps {
-                dir("${CLONE_DIR}/Vemee_Fe") {
+                dir("${CLONE_DIR}") {
                     sh 'npm install'
                 }
             }
@@ -53,16 +38,24 @@ EOF
 
         stage('Build Frontend') {
             steps {
-                dir("${CLONE_DIR}/Vemee_Fe") {
+                dir("${CLONE_DIR}") {
                     sh 'npm run build'
                 }
             }
         }
 
         stage('Serve Frontend') {
+            when {
+                expression {
+                    fileExists("${CLONE_DIR}/build/index.html")
+                }
+            }
             steps {
-                dir("${CLONE_DIR}/Vemee_Fe") {
-                    sh 'nohup serve -s build -l 3000 &'
+                dir("${CLONE_DIR}") {
+                    sh '''
+                        nohup npx serve -s build > serve.log 2>&1 &
+                        echo "Frontend served successfully on default port."
+                    '''
                 }
             }
         }
@@ -71,6 +64,9 @@ EOF
     post {
         failure {
             echo '❌ Deployment failed. Check logs for more info.'
+        }
+        success {
+            echo '✅ Deployment successful.'
         }
     }
 }
