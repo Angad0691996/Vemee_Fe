@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         GIT_CREDENTIALS_ID = 'github-creds'
-        REPO_URL = 'https://github.com/Angad0691996/Vemee_Fe.git'
+        REPO_URL = 'github.com/Angad0691996/Vemee_Fe.git'
         CLONE_DIR = '/home/ubuntu'
         BRANCH = 'main'
     }
