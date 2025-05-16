@@ -24,7 +24,8 @@ pipeline {
                 dir("${CLONE_DIR}/Vemee_Fe") {
                     sh '''
                         mkdir -p src/components
-                        echo "import React from 'react';
+                        cat <<EOF > src/components/ReactMeet.js
+import React from 'react';
 
 const ReactMeet = () => {
   return (
@@ -35,7 +36,8 @@ const ReactMeet = () => {
   );
 };
 
-export default ReactMeet;" > src/components/ReactMeet.js
+export default ReactMeet;
+EOF
                     '''
                 }
             }
