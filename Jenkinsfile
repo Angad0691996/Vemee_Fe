@@ -1,86 +1,81 @@
 pipeline {
     agent { label 'vemeefe' }
+
     environment {
         GIT_CREDENTIALS_ID = 'github-creds'
-        REPO_URL = 'github.com/Angad0691996/Vemee_Fe.git'
-        CLONE_DIR = '/home/ubuntu'
+        REPO_URL = 'https://github.com/Angad0691996/Vemee_Fe.git'
+        CLONE_DIR = '/home/ubuntu/Vemee_Fe'
+        NODE_VERSION = '18'
     }
-    stages {
-        stage('Git Cloning and Permission Setup') {
-            steps {
-                script {
-                    // Ensure the directory exists and set permissions
-                    sh """
-                        if [ ! -d "${CLONE_DIR}/Vemee_Fe" ]; then
-                            mkdir -p ${CLONE_DIR}/Vemee_Fe
-                        fi
-                    """
-                    // Adjust permissions
-                    sh """
-                        sudo chown -R jenkins:jenkins ${CLONE_DIR}
-                        sudo chmod -R 775 ${CLONE_DIR}
-                    """
-                    
-                    // Clean any previous clone
-                    sh """
-                        rm -rf ${CLONE_DIR}/Vemee_Fe/*
-                    """
 
-                    // Clone the repo using the GitHub credentials
-                    withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS_ID, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
-                        sh """
-                            cd ${CLONE_DIR}/Vemee_Fe
-                            git clone https://${GIT_USER}:${GIT_TOKEN}@${REPO_URL} .
-                        """
-                    }
+    stages {
+        stage('Clone Repository') {
+            steps {
+                dir(CLONE_DIR) {
+                    git branch: 'main',
+                        credentialsId: "${GIT_CREDENTIALS_ID}",
+                        url: "${REPO_URL}"
                 }
+            }
+        }
+
+        stage('Install Node.js (if missing)') {
+            steps {
+                sh '''
+                if ! command -v node > /dev/null; then
+                    curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | sudo -E bash -
+                    sudo apt-get install -y nodejs
+                fi
+                node -v
+                npm -v
+                '''
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                dir("${CLONE_DIR}/Vemee_Fe") {
+                dir(CLONE_DIR) {
                     sh 'npm install'
                 }
             }
         }
 
-        stage('Start Frontend') {
+        stage('Build Frontend') {
             steps {
-                dir("${CLONE_DIR}/Vemee_Fe") {
-                    sh "pkill -f node || true"
-                    sh "nohup npm start > frontend.log 2>&1 &"
+                dir(CLONE_DIR) {
+                    sh 'npm run build'
                 }
             }
         }
 
-        stage('Verify Frontend Running') {
+        stage('Serve Frontend') {
             steps {
-                script {
-                    sleep 5
-                    def frontendStatus = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:3000", returnStdout: true).trim()
+                dir(CLONE_DIR) {
+                    sh '''
+                    # Kill previous process if serve is running on port 3000
+                    if lsof -i:3000 > /dev/null; then
+                        sudo kill $(lsof -t -i:3000)
+                    fi
 
-                    if (frontendStatus != "200") {
-                        error "Frontend is not running on port 3000. HTTP Status: ${frontendStatus}"
-                    }
+                    # Install serve globally if not already
+                    if ! command -v serve > /dev/null; then
+                        sudo npm install -g serve
+                    fi
+
+                    # Run the app on port 3000
+                    nohup serve -s build -l 3000 > serve.log 2>&1 &
+                    '''
                 }
             }
         }
     }
 
     post {
-        always {
-            echo 'Pipeline completed. Checking directory structure...'
-            sh """
-                ls -al ${CLONE_DIR}/Vemee_Fe
-                tail -n 20 ${CLONE_DIR}/Vemee_Fe/frontend.log || echo "No log file found."
-            """
+        success {
+            echo "✅ App deployed successfully at http://13.233.251.155:3000/"
         }
         failure {
-            echo 'Build or frontend startup failed.'
-        }
-        success {
-            echo 'Build and frontend startup successful.'
+            echo "❌ Deployment failed. Check logs for more info."
         }
     }
 }
