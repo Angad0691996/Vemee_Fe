@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     echo 'Removing node_modules and package-lock.json...'
-                    sh 'rm -rf node_modules package-lock.json'
+                    sh 'sudo rm -rf node_modules package-lock.json'
                 }
             }
         }
