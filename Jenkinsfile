@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        CLONE_DIR = "${env.WORKSPACE}"  // Use actual Jenkins workspace
+        CLONE_DIR = "${env.WORKSPACE}"
     }
 
     stages {
@@ -23,6 +23,19 @@ const ReactMeet = () => {
 };
 
 export default ReactMeet;" > src/components/ReactMeet.js
+
+                        echo "import React from 'react';
+
+const AudioComponent = () => {
+  return (
+    <div>
+      <h2>Audio Component</h2>
+      <p>This is a placeholder for the AudioComponent.</p>
+    </div>
+  );
+};
+
+export default AudioComponent;" > src/components/AudioComponent.js
                     '''
                 }
             }
@@ -54,7 +67,7 @@ export default ReactMeet;" > src/components/ReactMeet.js
                 dir("${CLONE_DIR}") {
                     sh '''
                         nohup npx serve -s build > serve.log 2>&1 &
-                        echo "Frontend served successfully on default port."
+                        echo "Frontend served successfully."
                     '''
                 }
             }
