@@ -16,6 +16,7 @@ pipeline {
                     ]]
                 ])
                 // Just to verify files got cloned
+                sh 'pwd'
                 sh 'ls -la'
             }
         }
