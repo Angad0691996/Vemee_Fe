@@ -1,11 +1,10 @@
 pipeline {
-    agent { label 'any' }
-
-    options {
-        // Set the custom workspace for the entire pipeline
-        customWorkspace '/home/angad/Jenkins_CICDs/Vemee_frontend'
+    agent {
+        // use 'any' node and set custom workspace
+        any {
+            customWorkspace '/home/angad/Jenkins_CICDs/Vemee_frontend'
+        }
     }
-
     stages {
         stage('Clone Repository') {
             steps {
