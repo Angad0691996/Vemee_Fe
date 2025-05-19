@@ -23,29 +23,45 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'CI=false npm run build' // Or your preferred build command
+                sh 'CI=false npm run build'
             }
         }
 
         stage('Deploy') {
             steps {
                 sh '''
-                # Create the target directory with sudo and set ownership
                 sudo mkdir -p /var/www/html/vemee_frontend/
                 sudo chown -R jenkins:jenkins /var/www/html/vemee_frontend/
 
-                # Remove existing files
                 rm -rf /var/www/html/vemee_frontend/*
 
-                # Copy the build output
                 cp -r build/* /var/www/html/vemee_frontend/
                 '''
             }
         }
 
-        stage('Reload Nginx') {
+        stage('Configure Nginx') {
             steps {
-                sh 'sudo systemctl reload nginx'
+                sh '''
+                sudo bash -c 'cat > /etc/nginx/sites-available/default << EOF
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html/vemee_frontend;
+    index index.html index.htm;
+
+    server_name _;
+
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+}
+EOF
+'
+                sudo nginx -t
+                sudo systemctl reload nginx
+                '''
             }
         }
     }
