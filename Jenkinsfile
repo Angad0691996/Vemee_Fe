@@ -43,7 +43,7 @@ pipeline {
         stage('Configure Nginx') {
             steps {
                 sh '''
-                sudo bash -c 'cat > /etc/nginx/sites-available/default << EOF
+                sudo bash -c "cat > /etc/nginx/sites-available/default << 'EOF'
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
