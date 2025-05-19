@@ -1,85 +1,25 @@
 pipeline {
-    agent any
-
-    environment {
-        CLONE_DIR = "${env.WORKSPACE}"
+    agent {
+        label 'any'
+        customWorkspace '/home/angad/Jenkins_CICDs/Vemee_frontend'
     }
 
     stages {
-        stage('Ensure Missing Files Exist') {
+        stage('Clone Repository') {
             steps {
-                dir("${CLONE_DIR}") {
-                    sh '''
-                        mkdir -p src/components
-                        echo "import React from 'react';
+                // Clone repo with credentials
+                checkout([$class: 'GitSCM',
+                    branches: [[name: 'main']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/Angad0691996/Vemee_Fe.git',
+                        credentialsId: 'git-cred'
+                    ]]
+                ])
 
-const ReactMeet = () => {
-  return (
-    <div>
-      <h2>React Meet Component</h2>
-      <p>This is a placeholder for the ReactMeet component.</p>
-    </div>
-  );
-};
-
-export default ReactMeet;" > src/components/ReactMeet.js
-
-                        echo "import React from 'react';
-
-const AudioComponent = () => {
-  return (
-    <div>
-      <h2>Audio Component</h2>
-      <p>This is a placeholder for the AudioComponent.</p>
-    </div>
-  );
-};
-
-export default AudioComponent;" > src/components/AudioComponent.js
-                    '''
-                }
+                sh 'ls -la'
             }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                dir("${CLONE_DIR}") {
-                    sh 'npm install'
-                }
-            }
-        }
-
-        stage('Build Frontend') {
-            steps {
-                dir("${CLONE_DIR}") {
-                    sh 'npm run build'
-                }
-            }
-        }
-
-        stage('Serve Frontend') {
-            when {
-                expression {
-                    fileExists("${CLONE_DIR}/build/index.html")
-                }
-            }
-            steps {
-                dir("${CLONE_DIR}") {
-                    sh '''
-                        nohup npx serve -s build > serve.log 2>&1 &
-                        echo "Frontend served successfully."
-                    '''
-                }
-            }
-        }
-    }
-
-    post {
-        failure {
-            echo '❌ Deployment failed. Check logs for more info.'
-        }
-        success {
-            echo '✅ Deployment successful.'
         }
     }
 }
+
+
