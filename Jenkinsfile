@@ -1,44 +1,49 @@
 pipeline {
     agent any
-
-    environment {
-        REACT_APP_DIR = 'frontend' // change if your React app is in a subfolder
-        DEPLOY_DIR = '/var/www/html/vemee_frontend'
-    }
-
     stages {
-        stage('Checkout') {
+        stage('Clone Repo') {
             steps {
-                checkout scm
+                checkout([$class: 'GitSCM',
+                    branches: [[name: 'main']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/Angad0691996/Vemee_Fe.git',
+                        credentialsId: 'git-cred'
+                    ]]
+                ])
+                sh 'pwd'
+                sh 'ls -la'
             }
         }
 
-        stage('Install dependencies') {
+        stage('Install Dependencies') {
             steps {
-                dir("${REACT_APP_DIR}") {
-                    sh 'npm install'
-                }
+                sh 'npm install'
             }
         }
 
-        stage('Build React app') {
+        stage('Build') {
             steps {
-                dir("${REACT_APP_DIR}") {
-                    sh 'npm run build'
-                }
+                sh 'CI=false npm run build'
             }
         }
 
-        stage('Deploy to nginx') {
+        stage('Deploy') {
             steps {
-                // Clean old deployment and copy new build
-                sh """
-                   sudo rm -rf ${DEPLOY_DIR}/*
-                   sudo cp -r ${REACT_APP_DIR}/build/* ${DEPLOY_DIR}/
-                """
+                sh '''
+                sudo mkdir -p /var/www/html/vemee_frontend/
+                sudo chown -R jenkins:jenkins /var/www/html/vemee_frontend/
 
-                // Update nginx config with React root and client routing fix
-                sh '''sudo bash -c "cat > /etc/nginx/sites-available/default <<EOF
+                rm -rf /var/www/html/vemee_frontend/*
+
+                cp -r build/* /var/www/html/vemee_frontend/
+                '''
+            }
+        }
+
+        stage('Configure Nginx') {
+            steps {
+                sh '''
+                sudo bash -c 'cat > /etc/nginx/sites-available/default << EOF
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -49,14 +54,14 @@ server {
     server_name _;
 
     location / {
-        try_files \$uri /index.html;
+        try_files \$uri \$uri/ =404;
     }
 }
-EOF"'''
-
-                // Test and reload nginx
-                sh 'sudo nginx -t'
-                sh 'sudo systemctl reload nginx'
+EOF
+'
+                sudo nginx -t
+                sudo systemctl reload nginx
+                '''
             }
         }
     }
