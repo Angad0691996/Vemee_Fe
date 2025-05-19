@@ -42,21 +42,23 @@ pipeline {
         stage('Configure Nginx') {
             steps {
                 sh '''
-                sudo tee /etc/nginx/sites-available/default > /dev/null << EOF
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
+                echo 'Updating Nginx configuration...'
 
-    root /var/www/html/vemee_frontend;
-    index index.html index.htm;
+                echo 'server {
+                    listen 80 default_server;
+                    listen [::]:80 default_server;
 
-    server_name _;
+                    root /var/www/html/vemee_frontend;
+                    index index.html index.htm;
 
-    location / {
-        try_files \$uri \$uri/ /index.html;
-    }
-}
-EOF
+                    server_name _;
+
+                    location / {
+                        try_files \$uri \$uri/ /index.html;
+                    }
+                }' | sudo tee /tmp/nginx_default.conf
+
+                sudo mv /tmp/nginx_default.conf /etc/nginx/sites-available/default
                 sudo chmod 0440 /etc/sudoers.d/custom-sudoers || true
                 sudo chmod 0440 /etc/sudoers.d/jenkins || true
 
