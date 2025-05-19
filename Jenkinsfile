@@ -22,18 +22,22 @@ pipeline {
         }
 
         stage('Build') {
-            environment {
-                CI = 'false'
-            }
             steps {
-                sh 'npm run build'
+                sh 'CI=false npm run build' // Or your preferred build command
             }
         }
 
         stage('Deploy') {
             steps {
                 sh '''
+                # Create the target directory if it doesn't exist and set ownership to the Jenkins user
+                mkdir -p /var/www/html/vemee_frontend/
+                chown -R jenkins:jenkins /var/www/html/vemee_frontend/
+
+                # Remove existing files
                 rm -rf /var/www/html/vemee_frontend/*
+
+                # Copy the build output
                 cp -r build/* /var/www/html/vemee_frontend/
                 '''
             }
