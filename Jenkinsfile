@@ -30,7 +30,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                # Create the target directory with sudo if permissions are an issue
+                # Create the target directory with sudo and set ownership
                 sudo mkdir -p /var/www/html/vemee_frontend/
                 sudo chown -R jenkins:jenkins /var/www/html/vemee_frontend/
 
