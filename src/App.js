@@ -37,11 +37,11 @@ import { routes } from "./components/common/constant";
 import GuestLogin from "./components/login/guestLogin";
 import LatestLogin from "./components/login/latestLogin";
 import EntryComponent from "./components/common/EntryComponent";
-import ReactMeet from "./components/ReactMeet";
+import ReactMeet from './react-meet.js';
 import ScreenRecorder from "./components/meeting/ScreenRecorder";
 import FaceLogin from "./components/face_recognition/FaceLogin";
 import FaceSignUp from "./components/face_recognition/FaceSignUp";
-import AudioComponent from "./components/AudioComponent";
+import AudioComponent from './components/AudioComponent.js';
 import Translation from "./components/Translation";
 
 function App() {
