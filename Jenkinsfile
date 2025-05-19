@@ -1,12 +1,12 @@
 pipeline {
     agent {
-        // use 'any' node and set custom workspace
+        // 'any' or a label, with customWorkspace inside
         any {
             customWorkspace '/home/angad/Jenkins_CICDs/Vemee_frontend'
         }
     }
     stages {
-        stage('Clone Repository') {
+        stage('Clone Repo') {
             steps {
                 checkout([$class: 'GitSCM',
                     branches: [[name: 'main']],
@@ -15,7 +15,7 @@ pipeline {
                         credentialsId: 'git-cred'
                     ]]
                 ])
-
+                // Just to verify files got cloned
                 sh 'ls -la'
             }
         }
