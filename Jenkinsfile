@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                dir('/home/angad/Jenkins_CICDs/Vemee_frontend') {
+                dir('Jenkins_CICDs/Vemee_frontend') {
                     checkout([$class: 'GitSCM',
                         branches: [[name: 'main']],
                         userRemoteConfigs: [[
