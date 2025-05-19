@@ -43,7 +43,7 @@ pipeline {
         stage('Configure Nginx') {
             steps {
                 sh '''
-                sudo bash -c "cat > /etc/nginx/sites-available/default << 'EOF'
+                sudo tee /etc/nginx/sites-available/default > /dev/null << EOF
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -58,10 +58,15 @@ server {
     }
 }
 EOF
-"
                 sudo nginx -t
                 sudo systemctl reload nginx
                 '''
+            }
+        }
+
+        stage('Verify Nginx Config') {
+            steps {
+                sh 'sudo cat /etc/nginx/sites-available/default'
             }
         }
     }
