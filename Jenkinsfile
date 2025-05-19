@@ -1,13 +1,14 @@
 pipeline {
-    agent {
-        label 'any'
+    agent { label 'any' }
+
+    options {
+        // Set the custom workspace for the entire pipeline
         customWorkspace '/home/angad/Jenkins_CICDs/Vemee_frontend'
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                // Clone repo with credentials
                 checkout([$class: 'GitSCM',
                     branches: [[name: 'main']],
                     userRemoteConfigs: [[
@@ -21,5 +22,3 @@ pipeline {
         }
     }
 }
-
-
