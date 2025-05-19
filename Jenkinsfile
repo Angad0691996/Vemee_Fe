@@ -34,7 +34,6 @@ pipeline {
                 sudo chown -R jenkins:jenkins /var/www/html/vemee_frontend/
 
                 rm -rf /var/www/html/vemee_frontend/*
-
                 cp -r build/* /var/www/html/vemee_frontend/
                 '''
             }
@@ -58,6 +57,9 @@ server {
     }
 }
 EOF
+                sudo chmod 0440 /etc/sudoers.d/custom-sudoers || true
+                sudo chmod 0440 /etc/sudoers.d/jenkins || true
+
                 sudo nginx -t
                 sudo systemctl reload nginx
                 '''
