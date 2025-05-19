@@ -3,17 +3,42 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                dir('Jenkins_CICDs/Vemee_frontend') {
-                    checkout([$class: 'GitSCM',
-                        branches: [[name: 'main']],
-                        userRemoteConfigs: [[
-                            url: 'https://github.com/Angad0691996/Vemee_Fe.git',
-                            credentialsId: 'git-cred'
-                        ]]
-                    ])
-                    sh 'pwd'
-                    sh 'ls -la'
-                }
+                checkout([$class: 'GitSCM',
+                    branches: [[name: 'main']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/Angad0691996/Vemee_Fe.git',
+                        credentialsId: 'git-cred'
+                    ]]
+                ])
+                sh 'pwd'
+                sh 'ls -la'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                rm -rf /var/www/html/vemee_frontend/*
+                cp -r build/* /var/www/html/vemee_frontend/
+                '''
+            }
+        }
+
+        stage('Reload Nginx') {
+            steps {
+                sh 'sudo systemctl reload nginx'
             }
         }
     }
